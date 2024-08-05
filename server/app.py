@@ -22,6 +22,25 @@ def index():
 
 # Add views here
 
+@app.get('/earthquakes/<int:id>')
+def get_earthquake(id):
+    earthquake = Earthquake.query.where(Earthquake.id == id).first()
+
+    if earthquake:
+        return earthquake.to_dict(), 200
+    else:
+        return {"message": f"Earthquake {id} not found."}, 404
+    
+
+@app.get("/earthquakes/magnitude/<float:magnitude>")
+def get_min_earthquakes(magnitude):
+    earthquakes = Earthquake.query.where(Earthquake.magnitude >= magnitude).all()
+    count = len(earthquakes)
+    quakes = [earthquake_min.to_dict() for earthquake_min in earthquakes]
+    return{"count":count, "quakes":quakes}
+
+
+
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=5556, debug=True)
